@@ -2,16 +2,13 @@
 
 ## Visão Geral
 
-Firmware embarcado para o microcontrolador **STM32F411CEU6**, desenvolvido no contexto de controle de uma haste/estrutura flexível (projeto de mestrado).
+Firmware embarcado para o microcontrolador **STM32F411CEU6**, desenvolvido no contexto de controle de uma haste/estrutura flexível.
 
-**O que faz:**
+**Resumo de funcionalidades:**
 - Lê dados brutos de uma IMU (acelerômetro + giroscópio, 3 eixos cada) via **I2C** com **DMA**
 - Transmite os dados para o PC via **USB CDC** (porta serial virtual)
 - Aceita comandos simples (`'r'` = iniciar, `'s'` = parar)
 
-**O que NÃO faz:** não implementa controle, filtragem, processamento de sinal, gravação em memória nem acionamento de atuadores. É um módulo de aquisição puro — os dados brutos são consumidos por software externo (MATLAB, Python, etc.).
-
-**Sensor:** Provavelmente **ST LSM6DS33** (IMU 6-DoF), inferido pelo nome do projeto e WHO_AM_I = `0x69`.
 
 ---
 
@@ -21,18 +18,20 @@ Firmware embarcado para o microcontrolador **STM32F411CEU6**, desenvolvido no co
 |------|-------|
 | MCU | STM32F411CEU6 (Cortex-M4, 512K Flash, 128K RAM) |
 | SYSCLK | 60 MHz (HSE 25 MHz + PLL) |
-| Sensor | LSM6DS33 (ou compatível), I2C addr `0x6A` |
+| Sensor | LSM6DS33 (ou compatível), I2C addr `0x6A` | 
 | I2C | I2C1 Fast Mode 400 kHz — PB8 (SCL), PB9 (SDA) |
 | USB | OTG FS, CDC — PA11 (DM), PA12 (DP) |
 | Debug | SWD — PA13, PA14 |
 
 ---
 
+> **Nota:** A confirmar o modelo do sensor a ser utilizado
+
 ## Compilação e Gravação
 
 ### Pré-requisitos
 - **STM32CubeIDE** (toolchain GCC ARM inclusa)
-- Cabo USB para gravação (SWD) ou o próprio USB da placa (DFU, se suportado)
+- Cabo USB para gravação (SWD) ou o próprio USB da placa
 
 ### Build
 1. Abra o projeto no STM32CubeIDE (`File → Import → Existing Projects`)
@@ -80,27 +79,7 @@ A cada ~10 ms, são enviados **14 bytes brutos** (lidos a partir do registrador 
 - Giroscópio (±2000 dps): `ω(dps) = raw × 70.0 / 1000`
 - Acelerômetro (±16g): `a(g) = raw × 0.488 / 1000`
 
-### 4. Exemplo em Python
 
-```python
-import serial, struct
-
-ser = serial.Serial("/dev/ttyACM0", 115200, timeout=1)
-ser.write(b'r')  # inicia
-
-while True:
-    data = ser.read(14)
-    if len(data) == 14:
-        temp, gx, gy, gz, ax, ay, az = struct.unpack('<7h', data)
-        print(f"Gyro=({gx*0.07:+.2f}, {gy*0.07:+.2f}, {gz*0.07:+.2f}) dps  "
-              f"Accel=({ax*0.000488:+.4f}, {ay*0.000488:+.4f}, {az*0.000488:+.4f}) g")
-
-# ser.write(b's') para parar
-```
-
-> ⚠️ **Sincronização:** Não há delimitadores de frame nem checksum. Se um byte for perdido, todos os dados subsequentes ficam desalinhados. Veja [Limitações](#limitações).
-
----
 
 ## Estrutura do Projeto
 
@@ -121,7 +100,7 @@ imuLS6DS33/
 └── STM32F411CEUX_FLASH.ld      Linker script
 ```
 
-★ = arquivos com lógica escrita pelo desenvolvedor
+
 
 ---
 

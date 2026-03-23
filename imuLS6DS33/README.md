@@ -1,6 +1,6 @@
-# Controle de Haste com STM32 e IMU (LSM6DS33)
+# Controle de Haste Flexível 
 
-Este projeto contém o firmware base para o controle de uma haste utilizando um microcontrolador STM32 (testado na família STM32F411, popularmente conhecida como Black Pill) e um sensor inercial (IMU) LSM6DS33. 
+Este projeto contém o firmware base para o controle de uma haste utilizando um microcontrolador STM32 e um sensor inercial (IMU) LSM6DS33. 
 
 O código atual realiza a leitura contínua dos dados inerciais em alta frequência e os transmite para um computador via USB para controle, análise ou supervisão.
 
