@@ -1,0 +1,14 @@
+# Manter os bytes dos originais recebidos.
+* -text
+/*.md text eol=lf
+/.gitignore text eol=lf
+/.gitattributes text eol=lf
+/SHA256SUMS.txt text eol=lf
+/docs/*.md text eol=lf
+/docs/*.csv text eol=lf
+/docs/*.json text eol=lf
+/scripts/*.m text eol=lf
+*.slx binary
+*.mat binary
+*.png binary
+*.ioc -text
